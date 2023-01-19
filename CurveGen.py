@@ -8,9 +8,10 @@ y = []
 
 yMin = -10
 yMax = 10
+yInt = 0
 points = 21
 degree = 2
-noise = 10
+noise = 0
 
 f = open('points.csv', 'w')
 writer = csv.DictWriter(f, fieldnames=['x', 'y'])
