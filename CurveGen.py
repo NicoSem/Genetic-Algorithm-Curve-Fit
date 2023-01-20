@@ -8,17 +8,17 @@ y = []
 
 yMin = -10
 yMax = 10
-yInt = 0
+yInt = 10
 points = 21
 degree = 2
-noise = 0
+noise = 10
 
 f = open('points.csv', 'w')
 writer = csv.DictWriter(f, fieldnames=['x', 'y'])
 writer.writeheader()
 
 for i in np.arange(yMin, yMax, (yMax - yMin)/points):
-    result = (i**2 - noise + 2*noise*random.uniform(0,1))
+    result = (i**2 - noise + 2*noise*random.uniform(0,1) + yInt)
     y.append(i)
     x.append(result)
     writer.writerow({'x': str(i), 'y': result})
