@@ -6,6 +6,7 @@ import sys
 
 
 x = []
+x2 = []
 y = []
 y2 = []
 p = []
@@ -14,7 +15,7 @@ cRange = 10
 iterations = 100
 mutateChance = 0.5
 mutateMax = 2
-norm = 0.5
+norm = 0
 maxDegree = 20
 
 
@@ -93,6 +94,7 @@ with open('points.csv', 'r') as f:
                 x.append(float(row[0]))
                 y.append(float(row[1]))
         line += 1
+    x2 = range(int(min(x)), int(max(x)), 1)
 
 p = rank(p)
 
@@ -126,7 +128,7 @@ plt.figure(1)
 plt.scatter(x, y)
 
 plt.figure(1)
-plt.plot(x, calcValues(best[1:len(best)], x, len(best)-2), color='red')
+plt.plot(x2, calcValues(best[1:len(best)], x2, len(best)-2), color='red')
 plt.show()
 
 

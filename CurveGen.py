@@ -9,8 +9,8 @@ y = []
 yMin = -10
 yMax = 10
 yInt = 0
-points = 40
-degree = 2
+points = 4
+degree = 1
 noise = 100
 coef = [10,0.75,-4,12,3,0]
 
