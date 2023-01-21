@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import random
+import sys
+
 
 x = []
 y = []
@@ -9,25 +11,40 @@ y2 = []
 p = []
 size = 10
 cRange = 10
-iterations = 10
+iterations = 100
+mutateChance = 0.5
+mutateMax = 2
+norm = 0.5
+maxDegree = 20
+
+
+def sum(a):
+    result = 0
+    for i in a:
+        result += abs(i)
+    return result
+
 
 def calcError(c, x, y, d):
     err = 0
+    #print(c)
     for i in range(0, len(x)):
-        result = c[d]
+        result = c[len(c)-1]
         for j in range(0, d):
             result += c[j]*x[i]**(d-j)
-        err += (y[i] - result)**2
+        err += (y[i] - result)**2 + norm*sum(c)
     return err
+
 
 def calcValues(c, x, d):
     err = 0
     for i in range(0, len(x)):
-        result = c[d]
+        result = c[len(c)-1]
         for j in range(0, d):
             result += c[j]*x[i]**(d-j)
         y2.append(result)
     return y2
+
 
 def rank(r):
     #print("a" + str(len(r)))
@@ -45,6 +62,27 @@ def rank(r):
     #print("b" + str(len(r)))
     return r
 
+
+def breed(a, b, d):
+    c = [0]
+    #print('degree ' + str(d))
+    for i in range(1, d+2):
+        #print(i)
+        c.append((a[i] + b[i])/2)
+    if(random.uniform(0,1) > mutateChance):
+        c[random.randint(1,len(c)-1)] *= mutateMax*random.uniform(0,1)
+    c[0] = calcError(c[1:len(c)], x, y, d)
+    return c
+
+
+def gen(d):
+    c = [0]
+    for i in range(0, d+1):
+        c.append(random.randint(-cRange,cRange))
+    c[0] = calcError(c[1:len(c)], x, y, d)
+    return c
+
+
 with open('points.csv', 'r') as f:
     reader = csv.reader(f)
     line = 0
@@ -56,47 +94,39 @@ with open('points.csv', 'r') as f:
                 y.append(float(row[1]))
         line += 1
 
-
-
-for i in range(0,size):
-    poly = [0,0,0,0]
-    poly[1] = random.randint(-cRange,cRange)
-    poly[2] = random.randint(-cRange,cRange)
-    poly[3] = random.randint(-cRange,cRange)
-    poly[0] = calcError(poly[1:4], x, y, 2)
-    
-    p.append(poly)
-
 p = rank(p)
 
-for i in range(1, iterations):
-    c1 = [0,0,0,0]
-    c1[1] = (p[0][1] + p[1][1]) / 2
-    c1[2] = (p[0][2] + p[1][2]) / 2
-    c1[3] = (p[0][3] + p[1][3]) / 2
-    c1[0] = calcError(c1[1:4], x, y, 2)
+best = [sys.maxsize]
+for i in range(1, maxDegree+1):
+    for j in range(0,size):
+        p.append(gen(i))
+    for k in range(1, iterations):
+        p = rank(p)
+        for l in range(1,6):
+            p.pop(len(p)-1)
 
-    c2 = [0,0,0,0]
-    c2[1] = (p[2][1] + p[3][1]) / 2
-    c2[2] = (p[2][2] + p[3][2]) / 2
-    c2[3] = (p[2][3] + p[3][3]) / 2
-    c2[0] = calcError(c2[1:4], x, y, 2)
+        p.append(gen(i))
+        p.append(gen(i))
+        p.append(gen(i))
+        p.append(gen(i))
+        p.append(breed(p[0], p[1], i))
+        p.append(breed(p[2], p[3], i))
+    #print(p[0])
+    if p[0][0] < best[0]:
+        best = p[0]
+    p.clear()
+    
 
-    p.append(c1)
-    p.append(c2)
+    
+    
 
-    p = rank(p)
-
-    p.pop(len(p)-1)
-    p.pop(len(p)-1)
-
-print(p)
+print(best)
 
 plt.figure(1)
 plt.scatter(x, y)
 
 plt.figure(1)
-plt.plot(x, calcValues(p[0][1:4], x, 2), color='red')
+plt.plot(x, calcValues(best[1:len(best)], x, len(best)-2), color='red')
 plt.show()
 
 

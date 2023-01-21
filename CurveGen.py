@@ -8,20 +8,25 @@ y = []
 
 yMin = -10
 yMax = 10
-yInt = 10
-points = 21
+yInt = 0
+points = 40
 degree = 2
-noise = 10
+noise = 100
+coef = [10,0.75,-4,12,3,0]
 
 f = open('points.csv', 'w')
 writer = csv.DictWriter(f, fieldnames=['x', 'y'])
 writer.writeheader()
 
 for i in np.arange(yMin, yMax, (yMax - yMin)/points):
-    result = (i**2 - noise + 2*noise*random.uniform(0,1) + yInt)
-    y.append(i)
-    x.append(result)
+    result = yInt
+    for j in range(0, degree+1):
+        if j < len(coef):
+            result += coef[j]*i**(degree-j) + 2*noise*random.uniform(0,1)
+    y.append(result)
+    x.append(i)
+    print(result)
     writer.writerow({'x': str(i), 'y': result})
 
-plt.scatter(y, x)
+plt.plot(x, y)
 plt.show()
