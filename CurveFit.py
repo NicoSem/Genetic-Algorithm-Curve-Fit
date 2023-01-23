@@ -15,7 +15,7 @@ cRange = 10
 iterations = 100
 mutateChance = 0.5
 mutateMax = 2
-norm = 0
+norm = 1
 maxDegree = 20
 
 
@@ -83,6 +83,13 @@ def gen(d):
     c[0] = calcError(c[1:len(c)], x, y, d)
     return c
 
+def printPoly(c):
+    result = 'y = '
+    for i in range(1, len(c)-2):
+        result += str(c[i]) + 'x^' + str(len(c)-1 - i) + ' + '
+    result += str(c[len(c)-1])
+    print(result)
+
 
 with open('points.csv', 'r') as f:
     reader = csv.reader(f)
@@ -110,10 +117,9 @@ for i in range(1, maxDegree+1):
         p.append(gen(i))
         p.append(gen(i))
         p.append(gen(i))
-        p.append(gen(i))
         p.append(breed(p[0], p[1], i))
         p.append(breed(p[2], p[3], i))
-    #print(p[0])
+        p.append(breed(p[4], p[5], i))
     if p[0][0] < best[0]:
         best = p[0]
     p.clear()
@@ -122,7 +128,7 @@ for i in range(1, maxDegree+1):
     
     
 
-print(best)
+printPoly(best)
 
 plt.figure(1)
 plt.scatter(x, y)
