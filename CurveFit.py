@@ -14,8 +14,8 @@ size = 10
 cRange = 10
 iterations = 100
 mutateChance = 0.5
-mutateMax = 2
-norm = 1
+mutateMax = 10
+norm = 0
 maxDegree = 20
 
 
@@ -31,7 +31,7 @@ def calcError(c, x, y, d):
     #print(c)
     for i in range(0, len(x)):
         result = c[len(c)-1]
-        for j in range(0, d):
+        for j in range(1, d):
             result += c[j]*x[i]**(d-j)
         err += (y[i] - result)**2 + norm*sum(c)
     return err
@@ -41,7 +41,7 @@ def calcValues(c, x, d):
     err = 0
     for i in range(0, len(x)):
         result = c[len(c)-1]
-        for j in range(0, d):
+        for j in range(1, d):
             result += c[j]*x[i]**(d-j)
         y2.append(result)
     return y2
@@ -72,7 +72,7 @@ def breed(a, b, d):
         c.append((a[i] + b[i])/2)
     if(random.uniform(0,1) > mutateChance):
         c[random.randint(1,len(c)-1)] *= mutateMax*random.uniform(0,1)
-    c[0] = calcError(c[1:len(c)], x, y, d)
+    c[0] = calcError(c, x, y, d)
     return c
 
 
@@ -80,7 +80,7 @@ def gen(d):
     c = [0]
     for i in range(0, d+1):
         c.append(random.randint(-cRange,cRange))
-    c[0] = calcError(c[1:len(c)], x, y, d)
+    c[0] = calcError(c, x, y, d)
     return c
 
 def printPoly(c):
@@ -134,7 +134,7 @@ plt.figure(1)
 plt.scatter(x, y)
 
 plt.figure(1)
-plt.plot(x2, calcValues(best[1:len(best)], x2, len(best)-2), color='red')
+plt.plot(x2, calcValues(best, x2, len(best)-2), color='red')
 plt.show()
 
 

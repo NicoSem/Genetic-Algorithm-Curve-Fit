@@ -6,13 +6,13 @@ import random
 x = []
 y = []
 
-yMin = -10
-yMax = 10
+yMin = -50
+yMax = 150
 yInt = 0
-points = 100
-degree = 2
-noise = 10
-coef = [-1,0.75,-4,12,3,0]
+points = 40
+degree = 3
+noise = 10**degree
+coef = [1,-120, 37,-4,25,3,0]
 
 f = open('points.csv', 'w')
 writer = csv.DictWriter(f, fieldnames=['x', 'y'])
